@@ -37,7 +37,6 @@ struct CounterView: View {
                 CardView(title: "\(store.isTimerRunning ? "Stop" : "Start") timer")
             }
 
-            
             Button {
                 store.send(.FACT_BTN_TAPPED)
             } label: {

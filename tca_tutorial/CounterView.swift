@@ -31,6 +31,30 @@ struct CounterView: View {
                 }
             }
             
+            Button {
+                store.send(.TOGGLE_TIMER_BTN_TAPPED)
+            } label: {
+                CardView(title: "\(store.isTimerRunning ? "Stop" : "Start") timer")
+            }
+
+            
+            Button {
+                store.send(.FACT_BTN_TAPPED)
+            } label: {
+                CardView(title: "Fact")
+            }
+            
+            if store.isLoading {
+                ProgressView()
+                
+            } else if let fact = store.fact {
+                Text(fact)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+
+            
         }
         
         

@@ -11,7 +11,7 @@ import ComposableArchitecture
 @main
 struct tca_tutorialApp: App {
     
-    static let store: StoreOf<CounterFeature> = Store(initialState: CounterFeature.State(count: 0)) {
+    static let store: StoreOf<CounterFeature> = Store(initialState: CounterFeature.State()) {
         CounterFeature()
             ._printChanges()
     }

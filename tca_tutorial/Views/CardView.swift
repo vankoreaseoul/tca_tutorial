@@ -1,5 +1,5 @@
 //
-//  Views.swift
+//  CardView.swift
 //  tca_tutorial
 //
 //  Created by Heawon Seo on 6/11/25.
@@ -15,7 +15,10 @@ struct CardView: View {
         Text(title)
             .font(.largeTitle)
             .padding()
-            .background(.black.opacity(0.1))
+            .background {
+                Color.black.opacity(0.5)
+                    .background(.white)
+            }
             .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

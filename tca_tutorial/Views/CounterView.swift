@@ -10,6 +10,7 @@ import ComposableArchitecture
 
 struct CounterView: View {
     
+    let bgColor: Color
     let store: StoreOf<CounterFeature>
     
     var body: some View {
@@ -53,7 +54,10 @@ struct CounterView: View {
                     .padding()
             }
 
-            
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            bgColor.opacity(0.4)
         }
         
         
@@ -62,6 +66,7 @@ struct CounterView: View {
 
 #Preview {
     CounterView(
+        bgColor: .black,
         store: Store(initialState: CounterFeature.State()) {
             CounterFeature()
         }

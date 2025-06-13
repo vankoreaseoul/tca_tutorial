@@ -1,5 +1,5 @@
 //
-//  AppView.swift
+//  CounterAppView.swift
 //  tca_tutorial
 //
 //  Created by Heawon Seo on 6/12/25.
@@ -8,9 +8,9 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct AppView: View {
+struct CounterAppView: View {
     
-    let store: StoreOf<AppFeature>
+    let store: StoreOf<CounterAppFeature>
     
     var body: some View {
         TabView {
@@ -28,7 +28,7 @@ struct AppView: View {
 }
 
 #Preview {
-    AppView(store: Store(initialState: AppFeature.State(), reducer: {
-        AppFeature()
+    CounterAppView(store: Store(initialState: CounterAppFeature.State(), reducer: {
+        CounterAppFeature()
     }))
 }

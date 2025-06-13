@@ -1,5 +1,5 @@
 //
-//  AppFeature.swift
+//  CounterAppFeature.swift
 //  tca_tutorial
 //
 //  Created by Heawon Seo on 6/12/25.
@@ -8,7 +8,7 @@
 import ComposableArchitecture
 
 @Reducer
-struct AppFeature {
+struct CounterAppFeature {
     struct State: Equatable {
         var tab1 = CounterFeature.State()
         var tab2 = CounterFeature.State()

@@ -1,5 +1,5 @@
 //
-//  AppFeatureTests.swift
+//  CounterAppFeatureTests.swift
 //  tca_tutorialTests
 //
 //  Created by Heawon Seo on 6/12/25.
@@ -11,12 +11,12 @@ import Testing
 @testable import tca_tutorial
 
 @MainActor
-struct AppFeatureTests {
+struct CounterAppFeatureTests {
     
     @Test
     func incrementInFirstTab() async {
-        let store = TestStore(initialState: AppFeature.State()) {
-            AppFeature()
+        let store = TestStore(initialState: CounterAppFeature.State()) {
+            CounterAppFeature()
         }
         
         await store.send(\.TAB_1.INCREMENT_BTN_TAPPED) {

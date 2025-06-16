@@ -16,7 +16,19 @@ struct ContactView: View {
         NavigationStack {
             List {
                 ForEach(store.contacts) { contact in
-                    Text(contact.name)
+                    HStack(spacing: 0) {
+                        Text(contact.name)
+                        
+                        Spacer()
+                        
+                        Button {
+                            store.send(.DELETE_BTN_TAPPED(contact.id))
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
+                        }
+
+                    }
                 }
             }
             .navigationTitle("Contacts")
@@ -27,13 +39,13 @@ struct ContactView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-
                 }
             }
         }
-        .sheet(item: $store.scope(state: \.addContact, action: \.ADD_CONTACT)) { addContactStore in
+        .sheet(item: $store.scope(state: \.destination?.ADD_CONTACT, action: \.destination.ADD_CONTACT)) { addContactStore in
             NavigationStack { AddContactView(store: addContactStore) }
         }
+        .alert($store.scope(state: \.destination?.ALERT, action: \.destination.ALERT))
         
         
     }

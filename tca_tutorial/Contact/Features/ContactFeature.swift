@@ -23,40 +23,38 @@ struct ContactFeature {
         
         case destination(PresentationAction<Destination.Action>)
         
+        @CasePathable
         enum Alert: Equatable {
             case CONFIRM_DELETION(Contact.ID)
         }
     }
     
+    @Dependency(\.uuid) var uuid
+    
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .ADD_BTN_TAPPED:
-                state.destination = .ADD_CONTACT(AddContactFeature.State(contact: Contact(id: UUID(), name: "")))
+                state.destination = .ADD_CONTACT(AddContactFeature.State(contact: Contact(id: self.uuid(), name: "")))
                 return .none
                 
             case .DELETE_BTN_TAPPED(let id):
-                state.destination = .ALERT(
-                    AlertState {
-                       TextState("Are you sure?")
-                   } actions: {
-                       ButtonState(role: .destructive, action: .CONFIRM_DELETION(id)) {
-                           TextState("Delete")
-                       }
-                   }
-                )
+                state.destination = .ALERT(.deleteConfirmation(id: id))
                 return .none
                 
-            case let .destination(.presented(.ADD_CONTACT(.DELEGATE(.SAVE_CONTACT(contact))))):
-                state.contacts.append(contact)
-                return .none
-                
-            case let .destination(.presented(.ALERT(.CONFIRM_DELETION(id)))):
-                state.contacts.remove(id: id)
-                return .none
-                
-            case .destination:
-                return .none
+            case .destination(let childAction):
+                switch childAction {
+                case .presented(.ADD_CONTACT(.DELEGATE(.SAVE_CONTACT(let contact)))):
+                    state.contacts.append(contact)
+                    return .none
+                    
+                case .presented(.ALERT(.CONFIRM_DELETION(let id))):
+                    state.contacts.remove(id: id)
+                    return .none
+                    
+                default:
+                    return .none
+                }
             }
         }
         .ifLet(\.$destination, action: \.destination) {
@@ -74,3 +72,15 @@ extension ContactFeature {
 }
 
 extension ContactFeature.Destination.State: Equatable {}
+
+extension AlertState where Action == ContactFeature.Action.Alert {
+    static func deleteConfirmation(id: UUID) -> Self {
+        Self {
+            TextState("Are you sure?")
+        } actions: {
+            ButtonState(role: .destructive, action: .CONFIRM_DELETION(id)) {
+                TextState("Delete")
+            }
+        }
+    }
+}

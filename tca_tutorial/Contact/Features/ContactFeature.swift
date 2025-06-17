@@ -15,13 +15,15 @@ struct ContactFeature {
     struct State: Equatable {
         var contacts: IdentifiedArrayOf<Contact> = []
         @Presents var destination: Destination.State?
+        var path: StackState<ContactDetailFeature.State> = .init()
     }
     
     enum Action {
         case ADD_BTN_TAPPED
-        case DELETE_BTN_TAPPED(Contact.ID)
+//        case DELETE_BTN_TAPPED(Contact.ID)
         
         case destination(PresentationAction<Destination.Action>)
+        case path(StackActionOf<ContactDetailFeature>)
         
         @CasePathable
         enum Alert: Equatable {
@@ -38,9 +40,9 @@ struct ContactFeature {
                 state.destination = .ADD_CONTACT(AddContactFeature.State(contact: Contact(id: self.uuid(), name: "")))
                 return .none
                 
-            case .DELETE_BTN_TAPPED(let id):
-                state.destination = .ALERT(.deleteConfirmation(id: id))
-                return .none
+//            case .DELETE_BTN_TAPPED(let id):
+//                state.destination = .ALERT(.deleteConfirmation(id: id))
+//                return .none
                 
             case .destination(let childAction):
                 switch childAction {
@@ -55,10 +57,24 @@ struct ContactFeature {
                 default:
                     return .none
                 }
+                
+            case .path(let stackAction):
+                switch stackAction {
+                case .element(id: let id, action: .DELEGATE(.DO_DELETE)):
+                    guard let detailState = state.path[id: id] else { return .none }
+                    state.contacts.remove(id: detailState.contact.id)
+                    return .none
+                    
+                default:
+                    return .none
+                }
             }
         }
         .ifLet(\.$destination, action: \.destination) {
             Destination.body
+        }
+        .forEach(\.path, action: \.path) {
+            ContactDetailFeature()
         }
     }
 }

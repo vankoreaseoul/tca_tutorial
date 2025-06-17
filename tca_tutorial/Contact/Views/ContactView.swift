@@ -13,22 +13,25 @@ struct ContactView: View {
     @Bindable var store: StoreOf<ContactFeature>
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             List {
                 ForEach(store.contacts) { contact in
-                    HStack(spacing: 0) {
-                        Text(contact.name)
-                        
-                        Spacer()
-                        
-                        Button {
-                            store.send(.DELETE_BTN_TAPPED(contact.id))
-                        } label: {
-                            Image(systemName: "trash")
-                                .foregroundStyle(.red)
+                    NavigationLink(state: ContactDetailFeature.State(contact: contact)) {
+                        HStack(spacing: 0) {
+                            Text(contact.name)
+                            
+                            Spacer()
+                            
+                            Button {
+//                                store.send(.DELETE_BTN_TAPPED(contact.id))
+                            } label: {
+                                Image(systemName: "trash")
+                                    .foregroundStyle(.red)
+                            }
+                            
                         }
-
                     }
+                    .buttonStyle(.borderless)
                 }
             }
             .navigationTitle("Contacts")
@@ -41,6 +44,8 @@ struct ContactView: View {
                     }
                 }
             }
+        } destination: { store in
+            ContactDetailView(store: store)
         }
         .sheet(item: $store.scope(state: \.destination?.ADD_CONTACT, action: \.destination.ADD_CONTACT)) { addContactStore in
             NavigationStack { AddContactView(store: addContactStore) }
